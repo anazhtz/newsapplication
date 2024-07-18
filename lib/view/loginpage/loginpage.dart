@@ -5,15 +5,49 @@ import 'package:newsapplication/custom_widgets/custom_button.dart';
 import 'package:newsapplication/custom_widgets/login_or_signup.dart';
 import 'package:newsapplication/view/home_page/homepage.dart';
 import 'package:newsapplication/view/signuppage/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    Future<void> _handleLogin(BuildContext context) async {
+      if (_formKey.currentState?.validate() ?? false) {
+        try {
+          UserCredential userCredential =
+              await _auth.signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+
+          // Navigate to home page on successful login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'user-not-found') {
+            print('No user found for that email.');
+          } else if (e.code == 'wrong-password') {
+            print('Wrong password provided for that user.');
+          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to login. ${e.message ?? "Unknown error"}')),
+          );
+        } catch (e) {
+          print(e);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to login. Please try again later.')),
+          );
+        }
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -77,14 +111,7 @@ class LoginPage extends StatelessWidget {
             child: Center(
               child: CustomButton(
                 buttonText: 'Login',
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  }
-                },
+                onPressed: () => _handleLogin(context),
               ),
             ),
           ),

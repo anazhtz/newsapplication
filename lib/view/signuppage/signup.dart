@@ -4,6 +4,7 @@ import 'package:newsapplication/custom_widgets/cupertino_textfield.dart';
 import 'package:newsapplication/custom_widgets/custom_button.dart';
 import 'package:newsapplication/custom_widgets/login_or_signup.dart';
 import 'package:newsapplication/view/loginpage/loginpage.dart';
+import 'package:newsapplication/viewmodel/firebasehelper.dart'; 
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -14,6 +15,35 @@ class SignupPage extends StatelessWidget {
     final nameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    final fireHelper = FireHelper();
+
+     Future<void> _handleSignup() async {
+      if (_formKey.currentState?.validate() ?? false) {
+        final name = nameController.text.trim();
+        final email = emailController.text.trim();
+        final password = passwordController.text.trim();
+
+        final result = await fireHelper.signUp(
+          email: email,
+          password: password,
+          name: name,
+        );
+        if (result == "Success") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Signup successful')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result ?? 'Signup failed')),
+          );
+        }
+      }
+    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -91,11 +121,7 @@ class SignupPage extends StatelessWidget {
             child: Center(
               child: CustomButton(
                 buttonText: 'Signup',
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    // Perform signup action
-                  }
-                },
+                onPressed: _handleSignup,
               ),
             ),
           ),
