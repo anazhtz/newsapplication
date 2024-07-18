@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:dio/dio.dart';
-import 'package:newsapplication/core/baseurl.dart';
-import 'package:newsapplication/core/conts.dart';
 import 'package:newsapplication/model/homepage_model.dart';
-import 'package:newsapplication/model/newsmodel/newsmodel.dart';
+import 'package:newsapplication/view/home_page/newsprovider.dart';
+import 'package:provider/provider.dart';
+import 'package:newsapplication/core/conts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,36 +13,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Article> articles = [];
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
-    _fetchNews();
-  }
-
-  Future<void> _fetchNews() async {
-    setState(() {
-      _isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<NewsProvider>(context, listen: false).fetchNews();
     });
-    try {
-      final response = await Dio().get(AppUrls.baseUrl);
-      NewsModel newsModel = NewsModel.fromJson(response.data);
-      setState(() {
-        articles = newsModel.articles;
-      });
-    } catch (e) {
-      print('Error fetching news: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final newsProvider = Provider.of<NewsProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryColor,
@@ -98,17 +79,17 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              child: _isLoading
+              child: newsProvider.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                      itemCount: articles.length,
+                      itemCount: newsProvider.articles.length,
                       itemBuilder: (context, index) {
-                        Article article = articles[index];
+                        final article = newsProvider.articles[index];
                         return NewsItem(
                           source: article.source.name,
                           description: article.description ?? '',
                           imageUrl: article.urlToImage ??
-                              'https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png', // Replace with your actual fields
+                              'https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png',
                           time: article.publishedAt.toString(),
                         );
                       },

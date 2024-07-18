@@ -50,70 +50,74 @@ class LoginPage extends StatelessWidget {
         ),
       ),
       backgroundColor: AppColors.appColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomCupertinoTextField(
-                        placeholder: "Email",
-                        controller: emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                            return 'Please enter a valid email address';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomCupertinoTextField(
-                        placeholder: "Password",
-                        obscureText: true,
-                        controller: passwordController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, _) => Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomCupertinoTextField(
+                          placeholder: "Email",
+                          controller: emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        CustomCupertinoTextField(
+                          placeholder: "Password",
+                          obscureText: true,
+                          controller: passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Center(
-              child: CustomButton(
-                buttonText: 'Login',
-                onPressed: () => handleLogin(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Center(
+                child: userProvider.isLoading
+                    ? const CircularProgressIndicator()
+                    : CustomButton(
+                        buttonText: 'Login',
+                        onPressed: () => handleLogin(context),
+                      ),
               ),
             ),
-          ),
-          AskingLoginOrSignup(
-            firstText: 'New here? ',
-            secondText: 'Signup',
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const SignupPage()),
-              );
-            },
-          )
-        ],
+            AskingLoginOrSignup(
+              firstText: 'New here? ',
+              secondText: 'Signup',
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupPage()),
+                );
+              },
+            )
+          ],
+        ),
       ),
     );
   }

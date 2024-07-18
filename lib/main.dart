@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapplication/provider/user_provider.dart';
+import 'package:newsapplication/view/home_page/newsprovider.dart';
 import 'package:newsapplication/view/signuppage/sign_up.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => NewsProvider()),
       ],
       child: const MyApp(),
     ),
