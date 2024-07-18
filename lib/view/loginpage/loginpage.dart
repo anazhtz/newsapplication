@@ -10,6 +10,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
 
@@ -33,21 +34,39 @@ class LoginPage extends StatelessWidget {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomCupertinoTextField(
-                      placeholder: "Email",
-                      controller: emailController,
-                    ),
-                    const SizedBox(height: 20),
-                    CustomCupertinoTextField(
-                      placeholder: "Password",
-                      obscureText: true,
-                      controller: passwordController,
-                    ),
-                  ],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomCupertinoTextField(
+                        placeholder: "Email",
+                        controller: emailController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      CustomCupertinoTextField(
+                        placeholder: "Password",
+                        obscureText: true,
+                        controller: passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -57,7 +76,11 @@ class LoginPage extends StatelessWidget {
             child: Center(
               child: CustomButton(
                 buttonText: 'Login',
-                onPressed: () {},
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    // Perform login action
+                  }
+                },
               ),
             ),
           ),
