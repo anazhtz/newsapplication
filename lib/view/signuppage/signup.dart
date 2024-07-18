@@ -103,7 +103,7 @@ class SignupPage extends StatelessWidget {
             firstText: 'Already have an account? ',
             secondText: 'Login',
             onTap: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),
               );

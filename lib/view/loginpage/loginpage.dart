@@ -3,6 +3,7 @@ import 'package:newsapplication/core/conts.dart';
 import 'package:newsapplication/custom_widgets/cupertino_textfield.dart';
 import 'package:newsapplication/custom_widgets/custom_button.dart';
 import 'package:newsapplication/custom_widgets/login_or_signup.dart';
+import 'package:newsapplication/view/home_page/homepage.dart';
 import 'package:newsapplication/view/signuppage/signup.dart';
 
 class LoginPage extends StatelessWidget {
@@ -78,7 +79,10 @@ class LoginPage extends StatelessWidget {
                 buttonText: 'Login',
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    // Perform login action
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
                   }
                 },
               ),
@@ -88,7 +92,7 @@ class LoginPage extends StatelessWidget {
             firstText: 'New here? ',
             secondText: 'Signup',
             onTap: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const SignupPage()),
               );

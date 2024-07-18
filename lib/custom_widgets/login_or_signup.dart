@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../core/conts.dart';
 
-
 class AskingLoginOrSignup extends StatelessWidget {
   final String firstText;
   final String secondText;
@@ -25,7 +24,7 @@ class AskingLoginOrSignup extends StatelessWidget {
             text: firstText,
             style: const TextStyle(
               color: Colors.black,
-              fontFamily: "Poppins",
+              fontFamily: "PoppinsMedium",
               fontSize: 15,
             ),
             children: [
@@ -33,7 +32,7 @@ class AskingLoginOrSignup extends StatelessWidget {
                 text: secondText,
                 style: TextStyle(
                   color: AppColors.primaryColor,
-                  fontFamily: "Poppins",
+                  fontFamily: "PoppinsMedium",
                   fontSize: 15,
                 ),
               ),
