@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 
 class NewsItem extends StatelessWidget {
   final String source;
-  final String description;
-  final String imageUrl;
+  final String? description;
+  final String? imageUrl;
   final String time;
+  final String? content;
 
   const NewsItem({
-    super.key,
     required this.source,
-    required this.description,
-    required this.imageUrl,
+    this.description,
+    this.imageUrl,
     required this.time,
+    this.content,
   });
 
   @override
@@ -40,15 +41,17 @@ class NewsItem extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontFamily: "PoppinsMedium",
-                        fontSize: 14,
-                        color: Colors.black,
+                    if (description != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        description!,
+                        style: const TextStyle(
+                          fontFamily: "PoppinsMedium",
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
+                    ],
                     const SizedBox(height: 8),
                     Text(
                       time,
@@ -57,19 +60,32 @@ class NewsItem extends StatelessWidget {
                         color: Colors.black45,
                       ),
                     ),
+                    if (content != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        content!,
+                        style: const TextStyle(
+                          fontFamily: "PoppinsMedium",
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(
-                  imageUrl,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
+              if (imageUrl != null) ...[
+                const SizedBox(width: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    imageUrl!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

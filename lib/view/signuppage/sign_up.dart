@@ -3,47 +3,43 @@ import 'package:newsapplication/core/conts.dart';
 import 'package:newsapplication/custom_widgets/cupertino_textfield.dart';
 import 'package:newsapplication/custom_widgets/custom_button.dart';
 import 'package:newsapplication/custom_widgets/login_or_signup.dart';
-import 'package:newsapplication/view/home_page/homepage.dart';
-import 'package:newsapplication/view/signuppage/signup.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:newsapplication/provider/user_provider.dart';
+import 'package:newsapplication/view/loginpage/login_page.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key});
+class SignupPage extends StatelessWidget {
+  const SignupPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    Future<void> _handleLogin(BuildContext context) async {
+    Future<void> handleSignup() async {
       if (_formKey.currentState?.validate() ?? false) {
-        try {
-          UserCredential userCredential =
-              await _auth.signInWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
+        final name = nameController.text.trim();
+        final email = emailController.text.trim();
+        final password = passwordController.text.trim();
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-          // Navigate to home page on successful login
+        final result = await userProvider.signUp(
+          email: email,
+          password: password,
+          name: name,
+        );
+        if (result == "Success") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Signup successful')),
+          );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'user-not-found') {
-            print('No user found for that email.');
-          } else if (e.code == 'wrong-password') {
-            print('Wrong password provided for that user.');
-          }
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to login. ${e.message ?? "Unknown error"}')),
-          );
-        } catch (e) {
-          print(e);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to login. Please try again later.')),
+            SnackBar(content: Text(result ?? 'Signup failed')),
           );
         }
       }
@@ -76,6 +72,17 @@ class LoginPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomCupertinoTextField(
+                        placeholder: "Name",
+                        controller: nameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      CustomCupertinoTextField(
                         placeholder: "Email",
                         controller: emailController,
                         validator: (value) {
@@ -97,6 +104,9 @@ class LoginPage extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters long';
+                          }
                           return null;
                         },
                       ),
@@ -110,18 +120,18 @@ class LoginPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Center(
               child: CustomButton(
-                buttonText: 'Login',
-                onPressed: () => _handleLogin(context),
+                buttonText: 'Signup',
+                onPressed: handleSignup,
               ),
             ),
           ),
           AskingLoginOrSignup(
-            firstText: 'New here? ',
-            secondText: 'Signup',
+            firstText: 'Already have an account? ',
+            secondText: 'Login',
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const SignupPage()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
           )

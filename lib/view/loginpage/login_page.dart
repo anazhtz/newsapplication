@@ -3,47 +3,39 @@ import 'package:newsapplication/core/conts.dart';
 import 'package:newsapplication/custom_widgets/cupertino_textfield.dart';
 import 'package:newsapplication/custom_widgets/custom_button.dart';
 import 'package:newsapplication/custom_widgets/login_or_signup.dart';
-import 'package:newsapplication/view/loginpage/loginpage.dart';
-import 'package:newsapplication/viewmodel/firebasehelper.dart'; 
+import 'package:newsapplication/provider/user_provider.dart';
+import 'package:newsapplication/view/home_page/home_page.dart';
+import 'package:newsapplication/view/signuppage/sign_up.dart';
+import 'package:provider/provider.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    final nameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    final fireHelper = FireHelper();
 
-     Future<void> _handleSignup() async {
+    Future<void> handleLogin(BuildContext context) async {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
       if (_formKey.currentState?.validate() ?? false) {
-        final name = nameController.text.trim();
-        final email = emailController.text.trim();
-        final password = passwordController.text.trim();
-
-        final result = await fireHelper.signUp(
-          email: email,
-          password: password,
-          name: name,
+        final result = await userProvider.signIn(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
         if (result == "Success") {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Signup successful')),
-          );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
+            MaterialPageRoute(builder: (context) => const HomePage()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(result ?? 'Signup failed')),
+            SnackBar(content: Text('Failed to login. $result')),
           );
         }
       }
     }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -72,17 +64,6 @@ class SignupPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomCupertinoTextField(
-                        placeholder: "Name",
-                        controller: nameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your name';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      CustomCupertinoTextField(
                         placeholder: "Email",
                         controller: emailController,
                         validator: (value) {
@@ -104,9 +85,6 @@ class SignupPage extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters long';
-                          }
                           return null;
                         },
                       ),
@@ -120,18 +98,18 @@ class SignupPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Center(
               child: CustomButton(
-                buttonText: 'Signup',
-                onPressed: _handleSignup,
+                buttonText: 'Login',
+                onPressed: () => handleLogin(context),
               ),
             ),
           ),
           AskingLoginOrSignup(
-            firstText: 'Already have an account? ',
-            secondText: 'Login',
+            firstText: 'New here? ',
+            secondText: 'Signup',
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
+                MaterialPageRoute(builder: (context) => const SignupPage()),
               );
             },
           )
