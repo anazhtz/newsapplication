@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/core/conts.dart';
+
+import '../core/conts.dart';
+
 
 class AskingLoginOrSignup extends StatelessWidget {
   final String firstText;

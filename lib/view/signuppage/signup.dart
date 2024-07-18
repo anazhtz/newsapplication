@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/core/conts.dart';
-import 'package:newsapp/custome_widgets/cupertinotextfiled_custom.dart';
-import 'package:newsapp/custome_widgets/custombutton.dart';
-import 'package:newsapp/custome_widgets/login_or_signup.dart';
-import 'package:newsapp/view/loginpage/loginpage.dart';
+import 'package:newsapplication/core/conts.dart';
+import 'package:newsapplication/custom_widgets/cupertino_textfield.dart';
+import 'package:newsapplication/custom_widgets/custom_button.dart';
+import 'package:newsapplication/custom_widgets/login_or_signup.dart';
+
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -71,10 +71,7 @@ class SignupPage extends StatelessWidget {
             firstText: 'Already have an account? ',
             secondText: 'Login',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
+
             },
           )
         ],
