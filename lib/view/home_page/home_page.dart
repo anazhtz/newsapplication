@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                         final article = newsProvider.articles[index];
                         return NewsItem(
                           source: article.source.name,
-                          description: article.description ?? '',
+                          description: article.description ?? article.title,
                           imageUrl: article.urlToImage ??
                               'https://cdn.iconscout.com/icon/free/png-256/free-no-image-1771002-1505134.png',
                           time: article.publishedAt.toString(),
