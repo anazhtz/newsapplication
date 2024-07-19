@@ -13,10 +13,10 @@ class NetworkUtils {
   String _countryCode = 'in'; 
 
   NetworkUtils() {
-    _setupRemoteConfig();
+    setupRemoteConfig();
   }
 
-  Future<String> _setupRemoteConfig() async {
+  Future<String> setupRemoteConfig() async {
     await _remoteConfig.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: const Duration(minutes: 1),
       minimumFetchInterval: const Duration(seconds: 3),
@@ -29,7 +29,7 @@ class NetworkUtils {
 
   Future<Response> getRequest() async {
     try {
-      String countrysCode = await _setupRemoteConfig();
+      String countrysCode = await setupRemoteConfig();
       log(countrysCode);
       final String baseUrl = 'https://newsapi.org/v2/top-headlines?country=$countrysCode&apiKey=a3b73062336a4084953c7fcb0d02fcb3';
       final response = await _dio.get(baseUrl);

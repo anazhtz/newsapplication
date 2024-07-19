@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:newsapplication/core/networkutilits.dart';
 import 'package:newsapplication/model/homepage_model.dart';
 import 'package:newsapplication/view/home_page/newsprovider.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +14,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final NetworkUtils _networkUtils = NetworkUtils();
+  String countryName='IN';
+
+   Future<void> _initializeRemoteConfig() async {
+    String countryCode = await _networkUtils.setupRemoteConfig();
+    setState(() {
+      countryName=countryCode;
+    });
+  }
+  
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<NewsProvider>(context, listen: false).fetchNews();
     });
+    _initializeRemoteConfig();
   }
 
   @override
@@ -49,9 +61,9 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {},
-                child: const Text(
-                  "IN",
-                  style: TextStyle(
+                child:  Text(
+                  countryName.toUpperCase(),
+                  style: const TextStyle(
                       fontSize: 18,
                       fontFamily: "PoppinsBold",
                       color: Colors.white),
