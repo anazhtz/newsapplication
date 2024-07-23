@@ -10,7 +10,7 @@ class NetworkUtils {
   ));
 
   final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
-  String _countryCode = 'in'; 
+  String _countryCode = 'nz'; 
 
   NetworkUtils() {
     setupRemoteConfig();
